@@ -658,7 +658,7 @@
         
         this.transform(mtx,function() {
             that.trigger("scale");
-            callback && callback.call(that.node);
+            if (callback) callback.call(that.node);
         });
         
         return this;
@@ -686,7 +686,7 @@
         
         this.transform(mtx,function() {
             that.trigger('translate',that.node);
-            callback && callback.call(that.node);
+            if (callback) callback.call(that.node);
         });
         
         return this;
@@ -1221,7 +1221,7 @@
      */
     MousePan.prototype.vertical = true;
     /**
-     * Fonction(s) à exécuter au d�but du cliquer/glisser
+     * Fonction(s) à exécuter au début du cliquer/glisser
      */
     MousePan.prototype.onstart = null;
     /**
@@ -1248,7 +1248,7 @@
     };
     
     /**
-     * Fonction ex�cut�e sur l'évènement défini
+     * Fonction exécutée sur l'évènement défini
      * @param e Event
      */
     MousePan.prototype.start = function(e) {
@@ -1357,7 +1357,7 @@
      */
     ZapResizable.prototype.event = 'mousedown';
     /**
-     * Elément déclenchant le redimensionnement. La valeur "defaut" ins�re une image dans le coin inf�rieur droit.
+     * Elément déclenchant le redimensionnement. La valeur "defaut" insère une image dans le coin inférieur droit.
      */
     ZapResizable.prototype.field = 'default';
     /**
