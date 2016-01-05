@@ -4,14 +4,14 @@
         <meta charset="utf-8">
         <title>JSYG tests</title>
         
-        <link rel="stylesheet" href="../JSYG.ZoomAndPan.css"/>
+        <link rel="stylesheet" href="JSYG.ZoomAndPan.css"/>
         
-        <script src="../bower_components/jquery/dist/jquery.js"></script>
-        <script src="../bower_components/js-cookie/src/js.cookie.js"></script>
-        <script src="../bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
-        <script src="../bower_components/jsyg/JSYG.js"></script>
-        <script src="../bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
-        <script src="../JSYG.ZoomAndPan.js"></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/js-cookie/src/js.cookie.js"></script>
+        <script src="bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
+        <script src="bower_components/jsyg/JSYG.js"></script>
+        <script src="bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="JSYG.ZoomAndPan.js"></script>
         <style>
             svg {
                 border:1px solid gray;
@@ -91,7 +91,7 @@
             zap.overflow = "hidden";
             
                                     
-            getXML("example.svg").then(function(svg) {
+            getXML("examples/example.svg").then(function(svg) {
             
                 container.append(svg);
                 
