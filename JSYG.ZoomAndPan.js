@@ -270,10 +270,28 @@
         var jSVG = new JSYG(this.node),
         backup = jSVG.data('zoomandpan') || {},
         hidden = this.overflow == "hidden",
+        dim = jSVG.getDim(),
+        width = jSVG.attr("width"),
+        height = jSVG.attr("height"),
+        that = this,
         n;
         
-        backup.dimInit = jSVG.getDim();
-        delete backup.dimInit.x; delete backup.dimInit.y;
+        if (width && height) {
+        
+            backup.attrInit = {
+                width:width,
+                height:height
+            };
+        }
+        else {
+            
+            width = dim.width;
+            height = dim.height;
+            backup.dimInit = {
+                width:width,
+                height:height
+            };
+        }
         
         ///////////////////////////////////////////////////
         //INNERFRAME			
@@ -300,8 +318,8 @@
         if (viewBox && viewBox.width && viewBox.height) {
             
             mtx = mtx.scaleNonUniform(
-                parseFloat(jSVG.css('width'))/viewBox.width,
-            parseFloat(jSVG.css('height'))/viewBox.height
+                dim.width/viewBox.width,
+            dim.height/viewBox.height
                 );
         }
         
@@ -326,8 +344,8 @@
             margin = jSVG.css('margin');
             
             outerFrame.css({
-                width : Math.ceil( parseFloat(jSVG.css('width')) ),
-                height : Math.ceil( parseFloat(jSVG.css('height')) ),
+                width : width,
+                height : height,
                 overflow : this.overflow,
                 padding : '0px',
                 margin : margin,
@@ -352,8 +370,8 @@
                 "top":0,
                 "margin":0,
                 "position":"absolute",
-                "width":bounds.width,
-                "height":bounds.height
+                "width":width,
+                "height":height
             });
             
             mtx = new JSYG.Matrix().translate(-bounds.left,-bounds.top).multiply(mtx);
@@ -367,6 +385,14 @@
                 .scrollLeft(origin.x)
                 .scrollTop(origin.y);
         }
+        
+        function majCanvas() {
+            that.transform( that.transform() );
+        }
+        
+        if (/%/.test(width)) JSYG(window).on("resize",majCanvas);
+        
+        backup.majCanvas = majCanvas;
         
         this.enabled = true;
         
@@ -424,9 +450,18 @@
             delete backup.cssInit;
         }
         
+        if (backup.attrInit) {
+            jSVG.attr(backup.attrInit);
+            delete backup.attrInit;
+        }
+        
         if (backup.dimInit) {
             jSVG.setDim(backup.dimInit);
             delete backup.dimInit;
+        }
+        
+        if (backup.majCanvas) {
+            JSYG(window).off("resize",backup.majCanvas);
         }
         
         this.enabled = false;
@@ -442,7 +477,6 @@
         return (this.overflow == "hidden") ? 0 : (this.overflow == "auto" ? 2 : 20);
     };
     
-    ZoomAndPan.prototype._limitSize = function() {};
     /**
      * Renvoie (appel sans argument) ou définit la taille du canvas
      * @param width optionnel, largeur du canvas. Si non défini, largeur proportionnelle à la hauteur définie
