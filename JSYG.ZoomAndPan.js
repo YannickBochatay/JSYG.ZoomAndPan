@@ -271,28 +271,16 @@
         backup = jSVG.data('zoomandpan') || {},
         hidden = this.overflow == "hidden",
         dim = jSVG.getDim(),
-        width = jSVG.attr("width"),
-        height = jSVG.attr("height"),
+        width = jSVG.attr("width") || dim.width,
+        height = jSVG.attr("height") || dim.height,
         that = this,
         n;
         
-        if (width && height) {
-        
-            backup.attrInit = {
-                width:width,
-                height:height
-            };
-        }
-        else {
-            
-            width = dim.width;
-            height = dim.height;
-            backup.dimInit = {
-                width:width,
-                height:height
-            };
-        }
-        
+        backup.dimInit = {
+            width:width,
+            height:height
+        };
+                
         ///////////////////////////////////////////////////
         //INNERFRAME			
         var viewBox = this.node.viewBox.baseVal,
@@ -390,10 +378,13 @@
             that.transform( that.transform() );
         }
         
-        if (/%/.test(width)) JSYG(window).on("resize",majCanvas);
-        
-        backup.majCanvas = majCanvas;
-        
+        if (/%/.test(width)) {
+            
+            JSYG(window).on("resize",majCanvas);
+            backup.majCanvas = majCanvas;
+            majCanvas();
+        }
+                
         this.enabled = true;
         
         if (backup.plugins) {
@@ -450,16 +441,11 @@
             delete backup.cssInit;
         }
         
-        if (backup.attrInit) {
-            jSVG.attr(backup.attrInit);
-            delete backup.attrInit;
-        }
-        
         if (backup.dimInit) {
-            jSVG.setDim(backup.dimInit);
+            jSVG.css(backup.dimInit);
             delete backup.dimInit;
         }
-        
+                
         if (backup.majCanvas) {
             JSYG(window).off("resize",backup.majCanvas);
         }
@@ -875,22 +861,26 @@
         
         if (!cookie) return this;
         
-        var dimensions = cookie.split(';'),
-        css = { 'width' : dimensions[0], 'height' : dimensions[1] },
-        newmtx = dimensions[2];
+        cookie = cookie.split(';');
+        
+        var css = { 'width' : cookie[0], 'height' : cookie[1] },
+        newmtx = cookie[2],
+        overflow = cookie[3];
+    
+        if (overflow != zap.overflow) throw new Error("Overflow property is different than in cookie value.");
         
         new JSYG(node).css(css);
         
         new JSYG(zap.innerFrame).css(css).attr('transform',newmtx);
-        
-        if (zap.overflow!=='hidden' && dimensions[3] && dimensions[4] && dimensions[5]!=null && dimensions[6]!=null) {
+               
+        if (overflow != "hidden" && cookie[4] && cookie[5] && cookie[6]!=null && cookie[7]!=null) {
             
             new JSYG(zap.outerFrame)
-                .css({ width : dimensions[3], height : dimensions[4] })
-                .scrollLeft(dimensions[5])
-                .scrollTop(dimensions[6]);
+                .css({ width : cookie[4], height : cookie[5] })
+                .scrollLeft(cookie[6])
+                .scrollTop(cookie[7]);
         }
-        
+                
         return this;
     };
     
@@ -911,8 +901,10 @@
         
         valcookie+= parseFloat(jSVG.css('width'))+';'+parseFloat(jSVG.css('height'))+';';
         valcookie+= new JSYG(zap.innerFrame).getMtx().toString();
+        valcookie+=';'+zap.overflow;
         
         if (zap.overflow !== 'hidden') {
+            
             outerFrame = new JSYG(zap.outerFrame);
             valcookie+=';'+outerFrame.css('width')+';'+outerFrame.css('height')+';';
             valcookie+= outerFrame.scrollLeft()+';'+outerFrame.scrollTop();
