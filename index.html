@@ -6,11 +6,11 @@
         
         <link rel="stylesheet" href="JSYG.ZoomAndPan.css"/>
         
-        <script src="bower_components/jquery/dist/jquery.js"></script>
-        <script src="bower_components/js-cookie/src/js.cookie.js"></script>
-        <script src="bower_components/jquery-mousewheel/jquery.mousewheel.js"></script>
-        <script src="bower_components/jsyg/JSYG.js"></script>
-        <script src="bower_components/jsyg-resizable/JSYG.Resizable.js"></script>
+        <script src="node_modules/jquery/dist/jquery.js"></script>
+        <script src="node_modules/js-cookie/src/js.cookie.js"></script>
+        <script src="node_modules/jquery-mousewheel/jquery.mousewheel.js"></script>
+        <script src="node_modules/jsyg/dist/JSYG.js"></script>
+        <script src="node_modules/jsyg-resizable/JSYG.Resizable.js"></script>
         <script src="JSYG.ZoomAndPan.js"></script>
         <style>
             svg {
@@ -88,7 +88,7 @@
             zap.overflow = "auto";
             
                                     
-            getXML("examples/example.svg").then(function(svg) {
+            getXML("example.svg").then(function(svg) {
             
                 container.append(svg);
                 

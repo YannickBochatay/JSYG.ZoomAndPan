@@ -3,8 +3,27 @@
 
 (function(factory) {
     
-    if (typeof define != "undefined" && define.amd) define("jsyg-zoomandpan",["jsyg","jsyg-resizable","js-cookie","jquery-mousewheel"],factory);
+    if (typeof module == "object" && typeof module.exports == "object") {
+      
+      module.exports = factory(
+        require("jsyg"),
+        require("jsyg-resizable"),
+        require("js-cookie"),
+        require("jquery-mousewheel")
+      );
+    }
+    else if (typeof define != "undefined" && define.amd) {
+      
+      define("jsyg-zoomandpan",[
+        "jsyg",
+        "jsyg-resizable",
+        "js-cookie",
+        "jquery-mousewheel"
+      ],
+      factory);
+    }
     else if (typeof JSYG != "undefined") {
+      
         if (JSYG.Resizable && typeof Cookies != "undefined" && typeof jQuery != "undefined" && jQuery.fn.mousewheel) factory(JSYG,JSYG.Resizable,Cookies);
         else throw new Error("Dependency is missing");
     }

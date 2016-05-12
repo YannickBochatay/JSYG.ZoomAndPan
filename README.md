@@ -1,4 +1,23 @@
 # JSYG.ZoomAndPan
-Zoom and Pan features (JSYG framework).
+Zoom and Pan features with [JSYG framework](https://github.com/YannickBochatay/JSYG)
 
-[demo](http://yannickbochatay.github.io/JSYG.ZoomAndPan/)
+### Demo
+[http://yannickbochatay.github.io/JSYG.ZoomAndPan/](http://yannickbochatay.github.io/JSYG.ZoomAndPan/)
+
+### Installation
+```shell
+npm install jsyg-zoomandpan
+```
+You can also install it with bower
+
+### Example with webpack/babel
+
+```javascript
+import ZoomAndPan from "jsyg-zoomandpan"
+
+let zap = new ZoomAndPan("#mySVGContainer")
+zap.enable()
+zap.mouseWheelZoom.enable()
+zap.resizable.enable()
+zap.mousePan.enable()
+```
