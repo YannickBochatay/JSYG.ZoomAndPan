@@ -1,6 +1,6 @@
 {
   "name": "jsyg-zoomandpan",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Zoom and pan features with JSYG framework",
   "main": "JSYG.ZoomAndPan.js",
   "directories": {
@@ -26,9 +26,9 @@
   },
   "homepage": "https://github.com/YannickBochatay/JSYG.ZoomAndPan#readme",
   "dependencies": {
-    "jsyg":"",
-    "jsyg-resizable":"",
-    "js-cookie":"",
-    "jquery-mousewheel":""
+    "jquery-mousewheel": "^3.1.13",
+    "js-cookie": "^2.2.0",
+    "jsyg": "^1.0.2",
+    "jsyg-resizable": "^1.0.0"
   }
 }

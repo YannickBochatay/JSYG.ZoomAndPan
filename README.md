@@ -8,7 +8,6 @@ Zoom and Pan features with [JSYG framework](https://github.com/YannickBochatay/J
 ```shell
 npm install jsyg-zoomandpan
 ```
-You can also install it with bower
 
 ### Example with webpack/babel
 
