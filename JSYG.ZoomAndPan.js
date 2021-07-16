@@ -783,6 +783,44 @@
         
         return this;
     };
+
+    /**
+     * Adapte le contenu à la largeur du canvas
+     * @returns {ZoomAndPan}
+     */
+     ZoomAndPan.prototype.fitToWidth = function() {
+        
+        var bounds = this._getBounds("ctm"),
+        outerDim = this.size(),
+        add = (this.overflow == "hidden") ? 0 : 20,
+        rapX = (outerDim.width - add) / bounds.width;
+        
+        this.scale(rapX);
+
+        var transl = this.translate();
+        this.translate(-transl.x,-transl.y);
+        
+        return this;
+    };
+
+    /**
+     * Adapte le contenu à la hauteur du canvas
+     * @returns {ZoomAndPan}
+     */
+     ZoomAndPan.prototype.fitToHeight = function() {
+        
+        var bounds = this._getBounds("ctm"),
+        outerDim = this.size(),
+        add = (this.overflow == "hidden") ? 0 : 20,
+        rapY = (outerDim.height - add) / bounds.height;
+        
+        this.scale(rapY);
+
+        var transl = this.translate();
+        this.translate(-transl.x,-transl.y);
+        
+        return this;
+    };
     
     /**
      * Fixe les valeurs de la translation (point supérieur gauche)

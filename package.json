@@ -1,6 +1,6 @@
 {
   "name": "jsyg-zoomandpan",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Zoom and pan features with JSYG framework",
   "main": "JSYG.ZoomAndPan.js",
   "directories": {
