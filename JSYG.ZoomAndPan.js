@@ -76,7 +76,7 @@
         /**
          * gestion du storage pour mémoriser zoom et position
          */
-        this.storage = new Storage(this);
+        this.cookie = new Storage(this);
         /**
          * Element g permettant de gérer le zoom
          */
@@ -1002,9 +1002,7 @@
             
             return this;
         };
-        
-        //this.read();
-        
+                
         this.enabled = true;
         
         return this;
