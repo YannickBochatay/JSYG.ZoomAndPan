@@ -7,18 +7,14 @@
       
       module.exports = factory(
         require("jsyg"),
-        require("jsyg-resizable"),
-        require("js-cookie"),
-        require("jquery-mousewheel")
+        require("jsyg-resizable")
       );
     }
     else if (typeof define != "undefined" && define.amd) {
       
       define("jsyg-zoomandpan",[
         "jsyg",
-        "jsyg-resizable",
-        "js-cookie",
-        "jquery-mousewheel"
+        "jsyg-resizable"
       ],
       factory);
     }
@@ -29,7 +25,7 @@
     }
     else throw new Error("JSYG is needed");
     
-})(function(JSYG,Resizable,cookies) {
+})(function(JSYG,Resizable) {
     
     "use strict";
     
@@ -78,9 +74,9 @@
          */
         this.mousePan = new MousePan(this);
         /**
-         * gestion du cookie pour mémoriser zoom et position
+         * gestion du storage pour mémoriser zoom et position
          */
-        this.cookie = new Cookie(this);
+        this.storage = new Storage(this);
         /**
          * Element g permettant de gérer le zoom
          */
@@ -893,59 +889,55 @@
     });
     
     /**
-     * Gestion du cookie pour conservation de l'état
+     * Gestion du storage pour conservation de l'état
      */
-    function Cookie(zoomAndPanObject) {
+    function Storage(zoomAndPanObject) {
         this.zap = zoomAndPanObject;
     }
     
     /**
-     * expiration du cookie:  nombre de jours à partir de la date courante, ou null pour session courante.
+     * Lit le storage et positionne le canvas en conséquence
+     * @returns {Storage}
      */
-    Cookie.prototype.expires = null;
-    /**
-     * Lit le cookie et positionne le canvas en conséquence
-     * @returns {Cookie}
-     */
-    Cookie.prototype.read = function() {
+    Storage.prototype.read = function() {
         
         var zap = this.zap,
         node = zap.node;
         
         if (!node.id) throw new Error("Il faut définir un id pour la balise SVG pour pouvoir utiliser les cookies");
         
-        var cookie = cookies.get(node.id);
+        let storage = localStorage.getItem(node.id);
         
-        if (!cookie) return this;
+        if (!storage) return this;
         
-        cookie = cookie.split(';');
+        storage = storage.split(';');
         
-        var css = { 'width' : cookie[0], 'height' : cookie[1] },
-        newmtx = cookie[2],
-        overflow = cookie[3];
+        var css = { 'width' : storage[0], 'height' : storage[1] },
+        newmtx = storage[2],
+        overflow = storage[3];
     
-        if (overflow != zap.overflow) throw new Error("Overflow property is different than in cookie value.");
+        if (overflow != zap.overflow) throw new Error("Overflow property is different than in storage value.");
         
         new JSYG(node).css(css);
         
         new JSYG(zap.innerFrame).css(css).attr('transform',newmtx);
                
-        if (overflow != "hidden" && cookie[4] && cookie[5] && cookie[6]!=null && cookie[7]!=null) {
+        if (overflow != "hidden" && storage[4] && storage[5] && storage[6]!=null && storage[7]!=null) {
             
             new JSYG(zap.outerFrame)
-                .css({ width : cookie[4], height : cookie[5] })
-                .scrollLeft(cookie[6])
-                .scrollTop(cookie[7]);
+                .css({ width : storage[4], height : storage[5] })
+                .scrollLeft(storage[6])
+                .scrollTop(storage[7]);
         }
                 
         return this;
     };
     
     /**
-     * Ecrit un cookie pour mémoriser l'état du canvas SVG
-     * @returns {Cookie}
+     * Ecrit un storage pour mémoriser l'état du canvas SVG
+     * @returns {Storage}
      */
-    Cookie.prototype.write = function() {
+    Storage.prototype.write = function() {
         
         var zap = this.zap,
         node = zap.node;
@@ -967,26 +959,26 @@
             valcookie+= outerFrame.scrollLeft()+';'+outerFrame.scrollTop();
         }
         
-        cookies.set(node.id,valcookie, this.expires ? { expires: this.expires } : undefined);
+        localStorage.setItem(node.id, valcookie);
         
         return this;
     };
     
     /**
-     * Supprime le cookie
-     * @returns {Cookie}
+     * Supprime le storage
+     * @returns {Storage}
      */
-    Cookie.prototype.remove = function() {
+    Storage.prototype.remove = function() {
         
-        cookies.remove(this.zap.node.id);
+        localStorage.removeItem(this.zap.node.id);
         return this;
     };
     
     /**
-     * Active le cookie
-     * @returns {Cookie}
+     * Active le storage
+     * @returns {Storage}
      */
-    Cookie.prototype.enable = function() {
+    Storage.prototype.enable = function() {
         
         var zap = this.zap,
         node = zap.node,
@@ -1004,7 +996,7 @@
             
             new JSYG(window).off("unload",unloadFct);
             
-            cookies.remove(node.id);
+            localStorage.removeItem(node.id);
             
             this.enabled = false;
             
@@ -1019,10 +1011,10 @@
     };
     
     /**
-     * Désactive le cookie
-     * @returns {Cookie}
+     * Désactive le storage
+     * @returns {Storage}
      */
-    Cookie.prototype.disable = function() {
+    Storage.prototype.disable = function() {
         return this;
     };
     
@@ -1063,9 +1055,8 @@
      * Fonction exécutée sur évènement mouseWheel
      */
     MouseWheelZoom.prototype.wheel = function(e) {
-        
         var innerFrame = new JSYG(this.zap.innerFrame),
-        scale = 1 + this.step * e.deltaY,
+        scale = 1 + this.step * (e.deltaY > 0 ? -1 : 1),
         animate = this.zap.animate,
         origin;
         
@@ -1108,13 +1099,13 @@
         
         function mousewheelFct(e) {
             if (that.key && !e[that.key] && !e[that.key+'Key']) return;
-            that.wheel(e);
+            that.wheel(e.originalEvent ?? e);
         }
         
-        cible.on('mousewheel',mousewheelFct);
+        cible.on('wheel',mousewheelFct);
         
         this.disable = function() {
-            cible.off('mousewheel',mousewheelFct);
+            cible.off('wheel',mousewheelFct);
             this.enabled = false;
             return this;
         }; 
