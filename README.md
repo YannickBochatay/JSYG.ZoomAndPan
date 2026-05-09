@@ -2,6 +2,8 @@
 
 Zoom and Pan features with [JSYG framework](https://github.com/YannickBochatay/JSYG)
 
+## ⚠️ Deprecated. Use [@jsyg/zoomandpan](https://github.com/YannickBochatay/jsyg-monorepo/tree/main/packages/zoomandpan) instead.
+
 ### Demo
 
 <http://yannickbochatay.github.io/JSYG.ZoomAndPan/>
